@@ -1,0 +1,242 @@
+<div class="container-fluid d-flex justify-content-center">
+  <div class="w-40 mt-5 px-5 py-3 shadow rounded-4 border darkTheme">
+    <h4 class="text-center">Sub-admin Registration</h4>
+    <form class="row g-2 my-3" (submit)="manageSubAdmin($event)">
+      <div class="form-group">
+        <label for="username" class="form-label">
+          User Name <sup class="text-danger">*</sup>
+        </label>
+        <input
+          type="text"
+          class="form-control custom-input-dark"
+          id="username"
+          [field]="subAdminForm.user_name"
+          placeholder="Enter username..."
+          [ngClass]="{
+              'is-valid': subAdminForm.user_name().dirty() && subAdminForm.user_name().valid(),
+              'is-invalid custom-input-error-dark':
+                subAdminForm.user_name().invalid() &&
+                (subAdminForm.user_name().dirty() ||
+                  subAdminForm.user_name().touched()),
+            }"
+        />
+        <div class="text-danger text-start ms-2 mt-1 fs-12">
+          @if(subAdminForm().invalid() && subAdminForm.user_name().touched()){ @for(error of
+          subAdminForm.user_name().errors(); track error.kind){
+          <span class="fst-italic">{{ error.message }}</span>
+          } }
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email" class="form-label">
+          Email Address <sup class="text-danger">*</sup>
+        </label>
+        <input
+          type="email"
+          class="form-control custom-input-dark"
+          id="email"
+          [field]="subAdminForm.email"
+          placeholder="Enter email address..."
+          [ngClass]="{
+              'is-valid': subAdminForm.email().dirty()  && subAdminForm.email().valid(),
+              'is-invalid custom-input-error-dark':
+                subAdminForm.email().invalid() &&
+                (subAdminForm.email().dirty() ||
+                  subAdminForm.email().touched()),
+            }"
+        />
+        <div class="text-danger text-start ms-2 mt-1 fs-12">
+          @if(subAdminForm().invalid() && subAdminForm.email().touched()){ @for(error of
+          subAdminForm.email().errors(); track error.kind){
+          <span class="fst-italic">{{ error.message }}</span>
+          } }
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="mobile" class="form-label">
+          Mobile Number <sup class="text-danger">*</sup>
+        </label>
+        <div class="inner-addon left-addon">
+          <span class="innerText">
+            <img [ngSrc]="indianFlag()" class="indianFlag" alt="indiaFlag" width="20" height="20"
+          /></span>
+          <input
+            type="tel"
+            class="form-control custom-custom-input-dark"
+            id="mobile"
+            [field]="subAdminForm.phone"
+            (keypress)="allowOnlyNumbers($event)"
+            placeholder="00000 00000"
+            [ngClass]="{
+                'is-valid': subAdminForm.phone().dirty() && subAdminForm.phone().valid(),
+                'is-invalid custom-input-error-dark':
+                  subAdminForm.phone().invalid() &&
+                  (subAdminForm.phone().dirty() ||
+                    subAdminForm.phone().touched()),
+              }"
+          />
+          <div class="text-danger text-start ms-2 mt-1 fs-12">
+            @if(subAdminForm().invalid() && subAdminForm.phone().touched()){ @for(error of
+            subAdminForm.phone().errors(); track error.kind){
+            <span class="fst-italic">{{ error.message }}</span>
+            } }
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password" class="form-label"> Password <sup class="text-danger">*</sup> </label>
+        <div class="inner-addon right-addon">
+          @if (showVisibilityIcon()) {
+          <span class="innerText">
+            <i
+              [ngClass]="showPassword() ? 'bi bi-eye-slash' : 'bi bi-eye'"
+              (click)="togglePasswordVisibility()"
+            ></i>
+          </span>
+          }
+        </div>
+        @if(showPassword()){
+        <input
+          type="text"
+          class="form-control custom-input-dark"
+          [field]="subAdminForm.password"
+          placeholder="Enter password..."
+          [ngClass]="{
+              'is-valid':
+                !subAdminForm.password().invalid() &&
+                subAdminForm.password().dirty(),
+              'is-invalid custom-input-error-dark':
+                (subAdminForm.password().dirty() ||
+                  subAdminForm.password().touched()) &&
+                subAdminForm.password().invalid(),
+            }"
+        />
+        }@else{
+        <input
+          type="password"
+          class="form-control custom-input-dark"
+          [field]="subAdminForm.password"
+          placeholder="Enter password..."
+          [ngClass]="{
+              'is-valid':
+                !subAdminForm.password().invalid() &&
+                subAdminForm.password().dirty(),
+              'is-invalid custom-input-error-dark':
+                (subAdminForm.password().dirty() ||
+                  subAdminForm.password().touched()) &&
+                subAdminForm.password().invalid(),
+            }"
+        />
+        }
+        <div class="text-start text-danger fs-12 ms-2 mt-1">
+          @if(subAdminForm().invalid() && subAdminForm.password().touched()){ @for(error of
+          subAdminForm.password().errors(); track error.kind){
+          <span class="fst-italic">{{ error.message }}</span>
+          } }
+        </div>
+      </div>
+      @if ( !subAdminForm.password().invalid() && subAdminForm.password().dirty() ) {
+      <div class="px-2">
+        <app-password-strength
+          [passwordToCheck]="subAdminForm.password().value()"
+        ></app-password-strength>
+      </div>
+      }
+      <div class="form-group">
+        <label for="password" class="form-label">
+          Confirm Password <sup class="text-danger">*</sup>
+        </label>
+        <div class="inner-addon right-addon">
+          @if (showVisibilityIcon()) {
+          <span class="innerText">
+            <i
+              [ngClass]="showPassword2() ? 'bi bi-eye-slash' : 'bi bi-eye'"
+              (click)="togglePasswordVisibility2()"
+            ></i>
+          </span>
+          }
+        </div>
+        @if(showPassword2()){
+        <input
+          type="text"
+          class="form-control custom-input-dark"
+          [field]="subAdminForm.confirmPassword"
+          placeholder="Confirm password..."
+          [ngClass]="{
+              'is-valid':
+                !confirmPasswordValidation() &&
+                subAdminForm.confirmPassword().dirty(),
+              'is-invalid custom-input-error':
+                confirmPasswordValidation() &&
+                subAdminForm.confirmPassword().dirty(),
+            }"
+        />
+        }@else {
+        <input
+          type="password"
+          class="form-control custom-input-dark"
+          [field]="subAdminForm.confirmPassword"
+          placeholder="Confirm password..."
+          [ngClass]="{
+              'is-valid':
+                !confirmPasswordValidation() &&
+                subAdminForm.confirmPassword().dirty(),
+              'is-invalid custom-input-error':
+                confirmPasswordValidation() &&
+                subAdminForm.confirmPassword().dirty(),
+            }"
+        />
+        }
+
+        <div class="text-start text-danger fs-12 ms-12 mt-1">
+          @if ( confirmPasswordValidation() && subAdminForm.confirmPassword().dirty() ) {
+          <span class="fst-italic">Password mismatch!</span>
+          }
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="role" class="form-label"> Select Label <sup class="text-danger">*</sup> </label>
+        <select
+          [field]="subAdminForm.role"
+          class="form-select custom-input-dark"
+          title="role"
+          [ngClass]="{
+              'is-valid':subAdminForm.role().dirty() && !subAdminForm.role().invalid(),
+              'is-invalid custom-input-error':
+                subAdminForm.role().invalid() &&
+                (subAdminForm.role().dirty() ||
+                  subAdminForm.role().touched()),
+            }"
+        >
+          <option value="" [disabled]="true" [selected]="true">Select role....</option>
+          @for (role of roles(); track $index) {
+          <option [value]="role">{{ role | titlecase }}</option>
+          }
+        </select>
+        <div class="text-start text-danger ms-2 mt-1 fs-12">
+          @if(subAdminForm().invalid() && subAdminForm.role().touched()){ @for(error of
+          subAdminForm.role().errors(); track error.kind){
+          <span class="fst-italic">{{ error.message }}</span>
+          } }
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="d-grid mt-3">
+          @if (!pageLoader()) {
+          <button
+            class="btn btn-primary rounded-3"
+            type="submit"
+            [disabled]="subAdminForm().invalid() && !confirmPasswordValidation()"
+          >
+            Continue
+          </button>
+          } @else {
+          <button class="btn btn-primary rounded-3" type="button" title="loading">
+            <div class="spinner-border spinner-border-sm"></div>
+          </button>
+          }
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

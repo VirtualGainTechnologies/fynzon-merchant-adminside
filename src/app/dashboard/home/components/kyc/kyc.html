@@ -1,0 +1,576 @@
+
+  <div class="container-fluid">
+    @if (kycView() && entityType() === "ENTITY") {
+      <div
+        class="col-6 offset-3 my-2 shadow rounded-3 p-5 fs-12 card-dark border border-secondary"
+      >
+        <div class="row">
+          <div class="col-2">
+            <h4>
+              <i
+                class="bi bi-arrow-left-circle cursor-pointer"
+                [matTooltip]="'Back'"
+                [matTooltipPosition]="'above'"
+                (click)="cancelKycView()"
+              ></i>
+            </h4>
+          </div>
+          <div class="col-8 text-center fs-14">
+            <h5>Business KYC</h5>
+          </div>
+          <div class="col-2"></div>
+        </div>
+
+        <!--Gst Details  -->
+        <div class="d-flex justify-content-between my-3">
+          <h5>GST Details</h5>
+          <div>
+            <i
+              class="bi text-success me-2"
+              [ngClass]="
+                kycDetails()?.gstin?.status == 'VERIFIED'
+                  ? 'bi-patch-check-fill text-success'
+                  : 'bi-patch-exclamation-fill text-warning'
+              "
+            ></i
+            ><span>{{ kycDetails()?.gstin?.status || "N/A" }}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="text-secondary">Legal Name of Business</div>
+            <div>{{ kycDetails()?.gstin?.businessName || "N/A" }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-secondary">GSTIN Number</div>
+            <div>{{ kycDetails()?.gstin?.gstinNumber || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Constitution of Business</div>
+            <div>{{ kycDetails()?.gstin?.constitutionOfBusiness || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Center Jurisdiction</div>
+            <div>{{ kycDetails()?.gstin?.centreJurisdiction || "N/A" }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-secondary">Registration Date</div>
+            <div>{{ kycDetails()?.gstin?.registrationDate || "N/A" }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-secondary">Tax Payer type</div>
+            <div>{{ kycDetails()?.gstin?.taxPayerType || "N/A" }}</div>
+          </div>
+          <div class="col-12 my-2">
+            <div class="text-secondary">Address</div>
+            <div>
+              {{ kycDetails()?.gstin?.registeredAddress || "N/A" }}
+            </div>
+          </div>
+          <hr class="mt-4" />
+        </div>
+
+        <!-- PAN Details -->
+        <div class="d-flex justify-content-between my-3">
+          <h5>PAN Details</h5>
+          <div>
+            <i
+              class="bi text-success me-2"
+              [ngClass]="
+                kycDetails()?.pan?.status == 'VERIFIED'
+                  ? 'bi-patch-check-fill text-success'
+                  : 'bi-patch-exclamation-fill text-warning'
+              "
+            ></i
+            ><span>{{ kycDetails()?.pan?.status || "N/A" }}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="text-secondary">Business Name</div>
+            <div>{{ kycDetails()?.pan?.registeredName || "N/A" }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-secondary">PAN Number</div>
+            <div>{{ kycDetails()?.pan?.panNumber || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Type of Holder</div>
+            <div>{{ kycDetails()?.pan?.typeOfHolder || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">PAN Issue</div>
+            <div>{{ kycDetails()?.pan?.issueDate || "N/A" }}</div>
+          </div>
+          <div class="col-12 my-2">
+            <div class="text-secondary">Pan Images</div>
+            <div class="d-flex justify-content-center">
+              <div class="col-8">
+                <div class="p-3 rounded-4 border position-relative">
+                  <img
+                    [src]="kycDetails()?.pan?.panImage"
+                    width="100%"
+                    alt="pan_image"
+                  />
+                  <div
+                    class="position-absolute bg-dark text-white circle cursor-pointer"
+                    data-bs-toggle="modal"
+                    data-bs-target="#imageView"
+                    (click)="onViewImage(kycDetails()?.pan?.panImage)"
+                  >
+                    <i class="bi bi-arrows-angle-expand fs-10"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="mt-4" />
+        </div>
+
+        <!-- Bank Details -->
+        <div class="d-flex justify-content-between my-3">
+          <h5>Bank Details</h5>
+          <div>
+            <i
+              class="bi text-success me-2"
+              [ngClass]="
+                kycDetails()?.bank?.status == 'VERIFIED'
+                  ? 'bi-patch-check-fill text-success'
+                  : 'bi-patch-exclamation-fill text-warning'
+              "
+            ></i
+            ><span>{{ kycDetails()?.bank?.status || "N/A" }}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="text-secondary">Bank Name</div>
+            <div>{{ kycDetails()?.bank?.bankName || "N/A" }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-secondary">IFSC Code</div>
+            <div>{{ kycDetails()?.bank?.ifscCode || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Account Number</div>
+            <div>{{ kycDetails()?.bank?.accountNumber || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Branch Name</div>
+            <div>{{ kycDetails()?.bank?.branch || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Account Type</div>
+            <div>{{ kycDetails()?.bank?.accountType || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Registered Address</div>
+            <div>{{ kycDetails()?.bank?.registeredAddress || "N/A" }}</div>
+          </div>
+          <div class="row my-2">
+            <div class="flex justify-content-center">
+              <img
+                class="mt-2 cancelledCheck"
+                alt="cheque_image"
+                [src]="kycDetails()?.bank?.chequeImage"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    } @else if (kycView() && entityType() === "INDIVIDUAL") {
+      <div
+        class="col-6 offset-3 my-2 shadow border rounded-3 p-5 fs-12 card-dark border border-secondary"
+       
+      >
+        <div class="row">
+          <div class="col-2">
+            <h4>
+              <i
+                class="bi bi-arrow-left-circle cursor-pointer"
+                [matTooltip]="'Back'"
+                [matTooltipPosition]="'above'"
+                (click)="viewKycDetails({})"
+              ></i>
+            </h4>
+          </div>
+          <div class="col-8 text-center fs-14">
+            <h5>Individual KYC</h5>
+          </div>
+          <div class="col-2"></div>
+        </div>
+
+        <!-- Selfie Image -->
+        <div class="text-center">
+          <div>
+            <img
+              class="selfieImage"
+              alt="selfie_image"
+              [src]="
+                !kycDetails()?.selfie?.selfieImage ||
+                kycDetails()?.selfie?.selfieImage == 'N/A'
+                  ? defaultImage
+                  : kycDetails()?.selfie?.selfieImage
+              "
+            />
+          </div>
+        </div>
+
+        <!--Aadhar Details  -->
+        <div class="d-flex justify-content-between my-3">
+          <h5>Aadhaar Details</h5>
+          <div>
+            <i
+              class="bi text-success me-2"
+              [ngClass]="
+                kycDetails()?.aadhaar.status == 'VERIFIED'
+                  ? 'bi-patch-check-fill text-success'
+                  : 'bi-patch-exclamation-fill text-warning'
+              "
+            ></i
+            ><span>{{ kycDetails()?.aadhaar.status || "N/A" }}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="text-secondary">Aadhaar Number</div>
+            <div>{{ kycDetails()?.aadhaar?.aadhaarNumber || "N/A" }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-secondary">Birth Date</div>
+            <div>{{ kycDetails()?.aadhaar?.dateOfBirth || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Gender</div>
+            <div>{{ kycDetails()?.aadhaar?.gender || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Address</div>
+            <div>
+              {{ kycDetails()?.aadhaar?.registeredAddress || "N/A" }}
+            </div>
+          </div>
+          <div class="col-12 row">
+            <div class="text-secondary mb-4">Aadhar Images</div>
+            <div class="col-6">
+              <div class="p-3 rounded-4 border position-relative">
+                <img
+                  [src]="kycDetails()?.aadhaar?.frontImage"
+                  width="100%"
+                  alt="aadhar_front_img"
+                />
+                <div
+                  class="position-absolute bg-dark text-white circle cursor-pointer"
+                  data-bs-toggle="modal"
+                  data-bs-target="#imageView"
+                  (click)="onViewImage(kycDetails()?.aadhaar?.frontImage)"
+                >
+                  <i class="bi bi-arrows-angle-expand fs-10"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-3 rounded-4 border position-relative">
+                <img
+                  [src]="kycDetails()?.aadhaar?.backImage"
+                  width="100%"
+                  alt="aadhar_back_img"
+                />
+                <div
+                  class="position-absolute bg-dark text-white circle cursor-pointer"
+                  data-bs-toggle="modal"
+                  data-bs-target="#imageView"
+                  (click)="onViewImage(kycDetails()?.aadhaar?.backImage)"
+                >
+                  <i class="bi bi-arrows-angle-expand fs-10"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr class="mt-4" />
+        </div>
+
+        <!-- PAN Details -->
+        <div class="d-flex justify-content-between my-3">
+          <h5>PAN Details</h5>
+          <div>
+            <i
+              class="bi text-success me-2"
+              [ngClass]="
+                kycDetails()?.pan?.status == 'VERIFIED'
+                  ? 'bi-patch-check-fill text-success'
+                  : 'bi-patch-exclamation-fill text-warning'
+              "
+            ></i
+            ><span>{{ kycDetails()?.pan?.status || "N/A" }} </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="text-secondary">Name</div>
+            <div>{{ kycDetails()?.pan?.registeredName || "N/A" }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-secondary">PAN Number</div>
+            <div>{{ kycDetails()?.pan?.panNumber || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Type of Holder</div>
+            <div>{{ kycDetails()?.pan?.typeOfHolder || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Date of Birth</div>
+            <div>{{ kycDetails()?.pan?.dateOfBirth || "N/A" }}</div>
+          </div>
+          <div class="col-12 my-2">
+            <div class="text-secondary">Pan Images</div>
+            <div class="d-flex justify-content-center mt-4">
+              <div class="col-6">
+                <div class="p-3 rounded-4 border position-relative">
+                  <img
+                    [src]="kycDetails()?.pan?.panImage"
+                    alt="pan_image"
+                    width="100%"
+                  />
+                  <div
+                    class="position-absolute bg-dark text-white circle cursor-pointer"
+                    data-bs-toggle="modal"
+                    data-bs-target="#imageView"
+                    (click)="onViewImage(kycDetails()?.pan?.panImage)"
+                  >
+                    <i class="bi bi-arrows-angle-expand fs-10"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="mt-4" />
+        </div>
+
+        <!-- Bank Details -->
+        <div class="d-flex justify-content-between my-3">
+          <h5>Bank Details</h5>
+          <div>
+            <i
+              class="bi text-success me-2"
+              [ngClass]="
+                kycDetails()?.bank?.status == 'VERIFIED'
+                  ? 'bi-patch-check-fill text-success'
+                  : 'bi-patch-exclamation-fill text-warning'
+              "
+            ></i
+            ><span>{{ kycDetails()?.bank?.status || "N/A" }}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="text-secondary">Bank Name</div>
+            <div>{{ kycDetails()?.bank?.bankName || "N/A" }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-secondary">IFSC Code</div>
+            <div>{{ kycDetails()?.bank?.ifscCode || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Account Number</div>
+            <div>{{ kycDetails()?.bank?.accountNumber || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Branch Name</div>
+            <div>{{ kycDetails()?.bank?.branch || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Account Type</div>
+            <div>{{ kycDetails()?.bank?.accountType || "N/A" }}</div>
+          </div>
+          <div class="col-6 my-2">
+            <div class="text-secondary">Registered Address</div>
+            <div>{{ kycDetails()?.bank?.registeredAddress || "N/A" }}</div>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <form>
+        <div class="row mt-3 mx-3">
+          <div class="col-3 form-group">
+            <input
+              type="email"
+              class="form-control custom-input-dark"
+              [field]="kycForm.email"
+              placeholder="Email"
+            />
+          </div>
+          <div class="col-2 form-group">
+            <input
+              type="text"
+              class="form-control custom-input-dark"
+              [field]="kycForm.userName"
+              placeholder="Full Name"
+            />
+          </div>
+          <div class="col-2 form-group">
+            <input
+              type="text"
+              class="form-control custom-input-dark"
+              [field]="kycForm.businessName"
+              placeholder="Business Name"
+            />
+          </div>
+          <div class="col-2 form-group">
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              (click)="clearFilter()"
+            >
+              Clear Filter
+            </button>
+          </div>
+        </div>
+      </form>
+      <hr class="mx-3" />
+      <div class="row mx-3">
+        <table class="table">
+          <tr>
+            <th>SR. NO.</th>
+            <th>ENTITY TYPE</th>
+            <th>EMAIL</th>
+            <th>FULL NAME / ENTITY NAME</th>
+            <th>STATUS</th>
+            <th>ACTION</th>
+          </tr>
+          @if (!pageLoader()) {
+            @if (kycList().totalRecords>0) {
+              @for (kyc of kycList().result; track $index) {
+                <tr class="card-dark">
+                  <td>
+                    {{ pageSize() * (currentPageNumber() - 1) + ($index + 1) }}
+                  </td>
+                  <td>{{ kyc.merchant_type | titlecase }}</td>
+                  <td>{{ kyc.email }}</td>
+                  <td>
+                    {{
+                      kyc.merchant_type == "INDIVIDUAL"
+                        ? kyc.userName
+                        : kyc.businessName
+                    }}
+                  </td>
+                  <td>
+                    <span
+                      class="badge badge-sm text-white"
+                      [ngClass]="
+                        kyc.kyc_status == 'VERIFIED'
+                          ? 'bg-success'
+                          : 'bg-warning'
+                      "
+                      >{{ kyc.kyc_status }}</span
+                    >
+                  </td>
+                  <td class="">
+                    <div
+                      class="badge rounded-2 px-3 cursor-pointer bg-white text-dark"
+                      (click)="viewKycDetails(kyc)"
+                    >
+                      View
+                    </div>
+                  </td>
+                </tr>
+              }
+            } @else {
+              <tr class="card-dark">
+                <td colspan="7" class="p-5 text-center">
+                  <img
+                    class="bg-transparent"
+                    src="./Images/noDataFound.webp"
+                    alt="No Data Found"
+                    width="165px"
+                  /><br />
+                  No Data Found!
+                </td>
+              </tr>
+            }
+          } @else {
+            <tr>
+              <td colspan="7">
+                <div
+                  class="d-flex align-items-center justify-content-center m-5 bg-transparent"
+                >
+                  >
+                  <div
+                    class="spinner-border m-5 text-light"
+                  ></div>
+                </div>
+              </td>
+            </tr>
+          }
+        </table>
+        <div class="row">
+          <div class="col-6 text-center">
+            <div class="row col-12">
+              <button
+                class="col-1 btn btn-primary btn-sm"
+                (click)="gotoFirstorLastPage(1, kycList().totalRecords)"
+              >
+                First
+              </button>
+              <button
+                class="col-1 ms-2 btn btn-primary btn-sm fs-10"
+                (click)="gotoFirstorLastPage(0, kycList().totalRecords)"
+              >
+                Last
+              </button>
+              <input
+                type="text"
+                title="Go to Last Page"
+                class="col-4 ms-2 inputBox custom-input-dark"
+                [(ngModel)]="pageNumber"
+              />
+              <button
+                class="ms-2 col-1 cursor-pointer btn btn-primary btn-sm"
+                (click)="gotoPage()"
+              >
+                Go
+              </button>
+            </div>
+          </div>
+
+          <mat-paginator
+            class="col-6 text-white bg-darkmode"
+            #kycDataPaginator
+            [showFirstLastButtons]="true"
+            [pageSize]="pageSize()"
+            [length]="kycList().totalRecords"
+            aria-label="Select page"
+          >
+          </mat-paginator>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Image View Modal -->
+  <div
+    class="modal fade"
+    id="imageView"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="imageView"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div
+          class="position-absolute bg-dark text-white circle cursor-pointer"
+          data-bs-dismiss="modal"
+        >
+          <i class="bi bi-arrows-angle-contract fs-10"></i>
+        </div>
+        <div class="modal-body">
+          <img [ngSrc]="modalViewImage()" width="100%" />
+        </div>
+      </div>
+    </div>
+  </div>
+

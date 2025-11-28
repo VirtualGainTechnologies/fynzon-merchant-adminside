@@ -1,0 +1,77 @@
+@use "./colorTypography.scss" as color;
+@use "sass:map";
+
+$buttons: (
+  "rounded-left": (
+    radius: 30px 0px 0px 30px,
+  ),
+  "rounded-left-dark": (
+    radius: 30px 0px 0px 30px,
+    background: color.$col-white,
+    color: color.$col-dark,
+  ),
+  "rounded-right": (
+    radius: 0px 30px 30px 0px,
+  ),
+  "rounded-right-dark": (
+    radius: 0px 30px 30px 0px,
+    background: color.$col-white,
+    color: color.$col-dark,
+  ),
+  "rounded-go": (
+    radius: 50px,
+  ),
+  "rounded-go-dark": (
+    radius: 50px,
+    background: color.$col-white,
+    color: color.$col-dark,
+  ),
+);
+
+@mixin button($name, $config: ()) {
+  $rad: if(map.has-key($config, radius), map.get($config, radius), 5px);
+  $wd: if(map.has-key($config, width), map.get($config, width), 50px);
+  $ht: if(map.has-key($config, height), map.get($config, height), 40px);
+  $col: if(
+    map.has-key($config, color),
+    map.get($config, color),
+    color.$col-white
+  );
+  $bg: if(
+    map.has-key($config, background),
+    map.get($config, background),
+    color.$col-dark
+  );
+  $fs: if(map.has-key($config, font-size), map.get($config, font-size), 14px);
+  $bgh: if(
+    map.has-key($config, hover-background),
+    map.get($config, hover-background),
+    color.$col-primary
+  );
+  $colh: if(
+    map.has-key($config, hover-color),
+    map.get($config, hover-color),
+    color.$col-white
+  );
+  .button-#{$name} {
+    border: 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: $rad;
+    width: $wd;
+    height: $ht;
+    color: $col;
+    background: $bg;
+    font-size: $fs;
+    &:hover {
+      background: $bgh;
+      color: $colh;
+    }
+  }
+}
+
+@each $key, $config in $buttons {
+  @include button($key, $config);
+}

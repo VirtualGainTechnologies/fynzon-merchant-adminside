@@ -1,7 +1,198 @@
-<div class="container-fluid vh-100">
-   <div class="row">
-     <div class="col-6 offset-3 bg-primary">
-        ,
-     </div>
-   </div>
+<div class="container-fluid custom-bg">
+  <div class="row d-flex justify-content-center align-items-center vh-100">
+    <div class="col-6">
+      <form class="rounded-4 shadow bg-white row" (submit)="onSubmit($event)">
+        <div
+          class="col-4 bg-teal d-flex flex-column justify-content-center align-items-center vh-50"
+        >
+          <img [ngSrc]="fynzonLogo()" alt="fynzon_logo" width="50" height="50" />
+          <h4 class="text-primary mt-2">Admin Panel</h4>
+        </div>
+        @if(step()==1){
+        <div class="col-8 py-5 px-4 vh-50">
+          <div class="formGroup">
+            <label for="email" class="form-label fw-medium">
+              Email <span class="text-danger">*</span></label
+            >
+            <input
+              type="email"
+              class="form-control custom-input cutsom-input-height-45"
+              [field]="loginForm.email"
+              [ngClass]="{
+                    'is-valid':
+                      loginForm.email().dirty() &&
+                      loginForm.email().valid(),
+                    'is-invalid custom-input-error':
+                      (loginForm.email().dirty() ||
+                        loginForm.email().touched()) &&
+                      loginForm.email().invalid(),
+                  }"
+            />
+
+            @if(loginForm.email().invalid() && loginForm.email().touched()){
+            <div class="text-danger ms-2 my-1 fst-italic">
+              @for(error of loginForm.email().errors(); track error.kind) {
+              <span>{{ error.message }}</span>
+              }
+            </div>
+            }
+          </div>
+          <div class="formGroup mt-2">
+            <label for="password" class="form-label fw-medium">
+              Password <span class="text-danger">*</span>
+            </label>
+            <div class="inner-addon right-addon">
+              @if (showVisibilityIcon()) {
+              <span class="innerText" (click)="togglePasswordVisibility()">
+                @if (fieldTextType()) {
+                <i class="bi bi-eye-slash"></i>
+                } @else {
+                <i class="bi bi-eye"></i>
+                }
+              </span>
+              } @if(fieldTextType()){
+              <input
+                type="text"
+                class="form-control custom-input cutsom-input-height-45"
+                [field]="loginForm.password"
+                [ngClass]="{
+                    'is-valid':
+                      loginForm.password().dirty() &&
+                      loginForm.password().valid(),
+                    'is-invalid custom-input-error':
+                      (loginForm.password().dirty() ||
+                        loginForm.password().touched()) &&
+                      loginForm.password().invalid(),
+                  }"
+              />
+
+              }@else {
+              <input
+                type="password"
+                class="form-control custom-input cutsom-input-height-45"
+                [field]="loginForm.password"
+                [ngClass]="{
+                    'is-valid':
+                      loginForm.password().dirty() &&
+                      loginForm.password().valid(),
+                    'is-invalid custom-input-error':
+                      (loginForm.password().dirty() ||
+                        loginForm.password().touched()) &&
+                      loginForm.password().invalid(),
+                  }"
+              />
+
+              }
+            </div>
+            @if(loginForm.password().invalid() && loginForm.password().touched()){
+            <div class="text-danger ms-2 my-1 fst-italic">
+              @for(error of loginForm.password().errors(); track error.kind) {
+              <span>{{ error.message }}</span>
+              }
+            </div>
+            }
+          </div>
+
+          <div class="text-end me-2 mt-1">
+            <span class="fs-13 text-primary cursor-pointer" [routerLink]="'forgot-password'"
+              >Forgot Password ?</span
+            >
+          </div>
+
+          <div class="d-grid my-4">
+            @if(!spinner()){            <button
+              class="btn btn-primary"
+              type="button"
+              (click)="sendOtp()"
+              [disabled]="loginForm().invalid()"
+            >
+              Continue
+            </button>
+          }@else {
+             <button
+              class="btn btn-primary cursor-progress"
+              type="button"
+            >
+              <div class="spinner-border spinner-border-sm">
+              </div>
+            </button>
+          }
+          </div>
+        </div>
+        }@else if(step()==2) {
+        <div class="col-8 py-5 px-4 vh-50">
+          <h4 class="fs-20 fw-bold">Log in OTP</h4>
+          <p class="fs-15">Enter the verfification code sent to</p>
+          <h5 class="text-primary fw-bold">
+            @if (loginForm.email().value()) {
+            {{ loginForm.email().value() | fixedMaskData : 'email' }}
+            }
+          </h5>
+
+          <div class="form-group">
+            <label for="otpInput" class="form-label">Enter verification code</label>
+
+            <div class="text-center mb-5">
+              <ng-otp-input
+                [config]="ngOtpConfig()"
+                (onInputChange)="onOtpChange($event)"
+              ></ng-otp-input>
+            </div>
+
+            @if (resendOtpTimer$ | async; as time) {
+
+            <!-- When timer is running -->
+            @if (time.minutes > 0 || time.seconds > 0) {
+
+            <div class="d-grid">
+              @if (!spinner()) {
+              <button
+                type="submit"
+                class="btn btn-primary padding-inline-130"
+                [disabled]="loginForm().invalid()"
+              >
+                Verify
+              </button>
+              } @else {
+              <button type="button" class="btn btn-primary padding-inline-140 cursor-progress">
+                <div class="spinner-border spinner-border-sm" role="status"></div>
+              </button>
+              }
+            </div>
+
+            <div class="text-center fs-13 mt-1">
+              <div>
+                Haven't received OTP? Resend OTP in
+                <span class="text-danger fw-bold ps-1">
+                  {{ time.minutes }}m {{ time.seconds }}s
+                </span>
+              </div>
+            </div>
+
+            } @else if (time.minutes === 0 && time.seconds <= 0) {
+
+            <!-- When timer expires -->
+            <div class="d-grid">
+              @if (!resendOtpLoader()) {
+              <button
+                type="button"
+                class="btn btn-secondary padding-inline-125"
+                (click)="resendOtp()"
+              >
+                Resend OTP
+              </button>
+              } @else {
+              <button type="button" class="btn btn-secondary padding-inline-140 cursor-progress">
+                <div class="spinner-border spinner-border-sm" role="status"></div>
+              </button>
+              }
+            </div>
+
+            } }
+          </div>
+        </div>
+        }
+      </form>
+    </div>
+  </div>
 </div>

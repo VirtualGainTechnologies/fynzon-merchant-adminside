@@ -1,0 +1,22 @@
+@import "./../../../../utils/scss/badgeTypography.scss";
+@import "./../../../../utils/scss/buttonTypography.scss";
+th,
+th > i {
+  background-color: #316fab;
+  color: white;
+}
+
+table {
+  border-bottom: 1px solid lightsteelblue;
+}
+
+th,
+td {
+  font-size: 13px;
+  height: 46px;
+  padding-left: 20px;
+}
+
+.customPadding {
+  padding: 8px 14px;
+}

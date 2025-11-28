@@ -1,0 +1,380 @@
+
+  <div class="container-fluid">
+    @if (merchantFormView()) {
+      <form
+        class="custom-margin rounded-3 shadow px-5 py-3 card-dark"
+        [formGroup]="manageMerchantData"
+        (ngSubmit)="onUpdate()"
+      >
+        <div class="back">
+          <i
+            class="bi bi-arrow-left-circle cursor-pointer fs-3"
+            [matTooltip]="'Back'"
+            [matTooltipPosition]="'above'"
+            (click)="cancelUpdate()"
+          ></i>
+        </div>
+        <div class="text-center mb-5">
+          <img
+            src="./icons/user-profile.png"
+            alt="update_merchant"
+            width="60px"
+          />
+          <h6 class="my-2 fw-bold">UPDATE MERCHANT DETAILS</h6>
+        </div>
+
+        <div class="row gap-2">
+          <div class="form-group col">
+            <label for="merchantStatus" class="form-label fw-bold"
+              >Merchant Status:</label
+            >
+            <select
+              class="custom-input form-select"
+              title="merchant status"
+              formControlName="merchantStatus"
+            >
+              <option value="" [disabled]="true" [selected]="true">
+                --Select status--
+              </option>
+              @for (statusOptions of blockedStatus(); track $index) {
+                <option [value]="statusOptions">
+                  {{ statusOptions | titlecase }}
+                </option>
+              }
+            </select>
+          </div>
+          <div class="form-group col">
+            <label for="liveOnboardingEnabled" class="form-label fw-bold"
+              >Live Onboarding Status:</label
+            >
+            <select
+              class="custom-input form-select"
+              title="live_onboarding"
+              formControlName="liveOnboardingEnabled"
+            >
+              <option value="" [disabled]="true" [selected]="true">
+                --Select status--
+              </option>
+              <option [value]="true">True</option>
+              <option [value]="false">False</option>
+            </select>
+          </div>
+
+          <div class="w-100 d-none d-md-block"></div>
+
+          @if (selctedMerchant()?.user_api_setting_id?.test_api_key?.api_key) {
+            <div class="form-group col">
+              <label for="liveOnboardingStatus" class="form-label fw-bold"
+                >Test API Key:
+              </label>
+              {{ selctedMerchant()?.user_api_setting_id?.test_api_key?.api_key }}
+              <select
+                class="custom-input form-select my-2"
+                title="test_api_key"
+                formControlName="testapikey"
+              >
+                <option value="" [disabled]="true" [selected]="true">
+                  --Select status--
+                </option>
+                @for (statusOptions of status(); track $index) {
+                  <option [value]="statusOptions">
+                    {{ statusOptions | titlecase }}
+                  </option>
+                }
+              </select>
+            </div>
+          }
+          @if (selctedMerchant()?.user_api_setting_id?.live_api_key?.api_key) {
+            <div class="form-group col">
+              <label for="liveOnboardingStatus" class="form-label fw-bold"
+                >Live API Key:</label
+              >
+              {{ selctedMerchant()?.user_api_setting_id?.live_api_key?.api_key }}
+              <select
+                title="select status"
+                class="custom-input form-select my-2"
+                formControlName="liveapikey"
+              >
+                <option value="" [disabled]="true" [selected]="true">
+                  --Select status--
+                </option>
+                @for (statusOptions of status(); track $index) {
+                  <option [value]="statusOptions">
+                    {{ statusOptions | titlecase }}
+                  </option>
+                }
+              </select>
+            </div>
+          }
+
+          <div class="w-100 d-none d-md-block"></div>
+          @if (getTestIpsKeys().length) {
+            <div formGroupName="testips">
+              <label for="testIpKey" class="form-label fw-bold"
+                >Test IP Key:</label
+              >
+              <div class="row row-cols-2">
+                @for (testApi of getTestIpsKeys(); track $index) {
+                  <div class="form-group col my-2">
+                    <label [for]="testApi" class="form-label">
+                      IP: {{ testApi }}</label
+                    >
+                    <select
+                      class="custom-input form-select"
+                      title="test_api"
+                      [formControlName]="testApi"
+                    >
+                      <option value="" [disabled]="true" [selected]="true">
+                        --Select status--
+                      </option>
+                      @for (statusOptions of status(); track $index) {
+                        <option [value]="statusOptions">
+                          {{ statusOptions | titlecase }}
+                        </option>
+                      }
+                    </select>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          @if (getLiveIpsKeys().length) {
+            <div formGroupName="liveips">
+              <label for="liveApiKeys" class="form-label fw-bold"
+                >Live IP Key:</label
+              >
+              <div class="row row-cols-2">
+                @for (liveApi of getLiveIpsKeys(); track $index) {
+                  <div class="form-group col my-2">
+                    <label [for]="liveApi" class="form-label">
+                      IP: {{ liveApi }}</label
+                    >
+                    <select
+                      class="custom-input form-select"
+                      title="live_api"
+                      [formControlName]="liveApi"
+                    >
+                      <option value="" [disabled]="true" [selected]="true">
+                        --Select status--
+                      </option>
+                      @for (statusOptions of status(); track $index) {
+                        <option [value]="statusOptions">
+                          {{ statusOptions | titlecase }}
+                        </option>
+                      }
+                    </select>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+        <div class="form-group my-5 hstack gap-3">
+          @if (!pageLoader()) {
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm col-6 py-2"
+              (click)="cancelUpdate()"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary btn-sm col-6 py-2"
+              [disabled]="!manageMerchantData.dirty"
+            >
+              Update
+            </button>
+          } @else {
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm col-6 py-2"
+              [disabled]="true"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              title="loading"
+              class="btn btn-primary btn-sm col-6 py-2"
+              [disabled]="true"
+            >
+              <div class="spinner-border spinner-border-sm"></div>
+            </button>
+          }
+        </div>
+      </form>
+    } @else {
+      <form>
+        <div class="row mt-2 mx-3">
+          <div class="col-3">
+            <input
+              type="email"
+              class="form-control custom-input-dark"
+              placeholder="Enter email here..."
+              formControlName="email"
+            />
+          </div>
+          <div class="col-3">
+            <input
+              type="text"
+              class="form-control custom-input-dark"
+              placeholder="Enter fullname here..."
+              formControlName="fullName"
+            />
+          </div>
+          <div class="col-3">
+            <input
+              type="text"
+              class="form-control custom-input-dark"
+              placeholder="Enter businessname here..."
+              formControlName="businessName"
+            />
+          </div>
+          <div class="col-2">
+            <button
+              type="button"
+              class="btn btn-outline-danger rounded-3"
+              (click)="clearFilter()"
+            >
+              Clear Filter
+            </button>
+          </div>
+          <!-- managing column  -->
+          <div class="col-4"></div>
+        </div>
+      </form>
+      <hr class="mx-3" />
+      <div class="row mx-3">
+        <table class="table">
+          <tr>
+            <th>SR. NO.</th>
+            <th>TYPE</th>
+            <th>EMAIL</th>
+            <th>PHONE</th>
+            <th>FULL NAME/ BUSINESS NAME</th>
+            <th>PROFESSION/ BUSINESS CATEGORY</th>
+            <th>STATUS</th>
+            <th>ACTIVITY</th>
+          </tr>
+          @if (!pageLoader()) {
+            @if (merchantList().totalRecords > 0) {
+              @for (merchant of merchantList().result; track $index) {
+                <tr class="darkTheme">
+                  <td>{{ (currentPage() - 1) * pageSize() + ($index + 1) }}</td>
+                  <td>{{ merchant.merchant_type | titlecase }}</td>
+                  <td>{{ merchant.email }}</td>
+                  <td>{{ merchant.phone }}</td>
+                  <td>
+                    {{
+                      merchant.merchant_type == "ENTITY"
+                        ? merchant.business_name
+                        : merchant.full_name
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      merchant?.merchant_type == "ENTITY"
+                        ? merchant?.business_category
+                        : merchant.profession
+                    }}
+                  </td>
+
+                  <td>
+                    <span
+                      class="badge"
+                      [ngClass]="
+                        merchant.is_blocked
+                          ? 'badge-blocked'
+                          : 'badge-active customPadding'
+                      "
+                      >{{ merchant.is_blocked ? "Blocked" : "Active" }}</span
+                    >
+                  </td>
+
+                  <td>
+                    <span
+                      class="badge cursor-pointer badge-white"
+                      (click)="manageData(merchant)"
+                      routerLink="addSubadmin"
+                      >Manage</span
+                    >
+                  </td>
+                </tr>
+              }
+            } @else {
+              <tr class="card-dark">
+                <td colspan="8" class="p-4 text-center">
+                  <img
+                    class="bg-transparent"
+                    src="./Images/noDataFound.webp"
+                    alt="No Data Found"
+                    width="165px"
+                  /><br />
+                  No Data Found!
+                </td>
+              </tr>
+            }
+          } @else {
+            <tr>
+              <td colspan="8">
+                <div
+                  class="d-flex align-items-center justify-content-center m-5 bg-transparent"
+                >
+                  <div
+                    class="spinner-border m-5 text-light"
+                  ></div>
+                </div>
+              </td>
+            </tr>
+          }
+        </table>
+        <div class="row d-flex align-items-center">
+          <div class="col-6 text-center">
+            <div class="row col-12">
+              <button
+                class="col-1 btn btn-primary btn-sm fs-10"
+                (click)="
+                  gotoFirstPageOrLastPage(1, merchantList().totalRecords)
+                "
+              >
+                First
+              </button>
+              <button
+                class="col-1 ms-2 btn btn-primary btn-sm fs-10"
+                (click)="
+                  gotoFirstPageOrLastPage(0, merchantList().totalRecords)
+                "
+              >
+                Last
+              </button>
+              <input
+                type="text"
+                title="go to page"
+                class="col-4 ms-2 sm-btn inputBox custom-input-dark"
+                [(ngModel)]="pageNumber"
+                min="1"
+              />
+              <button
+                class="col-1 btn btn-primary ms-2 btn-sm fs-10"
+                (click)="gotoPage()"
+              >
+                Go
+              </button>
+            </div>
+          </div>
+
+          <mat-paginator
+            #merchantPagination
+            class="col-6 bg-darkmode"
+            showFirstLastButtons
+            [length]="merchantList().totalRecords"
+            [pageSize]="pageSize()"
+            aria-label="Select page"
+          >
+          </mat-paginator>
+        </div>
+      </div>
+    }
+  </div>
+

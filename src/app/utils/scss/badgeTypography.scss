@@ -1,0 +1,54 @@
+@use "sass:map";
+@use "./colorTypography.scss" as var;
+$badges: (
+  "active": (
+    var.$col-success,
+    var.$col-white,
+    5px,
+  ),
+  "manage": (
+    var.$col-dark,
+    var.$col-white,
+    5px,
+  ),
+  "white": (
+    var.$col-white,
+    var.$col-dark,
+    5px,
+  ),
+  "blocked": (
+    #dc3545,
+    var.$col-white,
+    5px,
+  ),
+  "level1": (
+    var.$col-level1,
+    var.$col-white,
+    5px,
+  ),
+  "level2": (
+    var.$col-level2,
+    var.$col-white,
+    5px,
+  ),
+  "level3": (
+    var.$col-level3,
+    var.$col-white,
+    5px,
+  ),
+);
+
+// Mixin for a badge
+@mixin badge($name, $bg, $col, $rad) {
+  .badge-#{$name} {
+    background: $bg;
+    color: $col;
+    border-radius: $rad;
+    border: 0;
+    font-size: 0.65rem;
+  }
+}
+
+@each $key, $values in $badges {
+  @include badge($key, $values...);
+}

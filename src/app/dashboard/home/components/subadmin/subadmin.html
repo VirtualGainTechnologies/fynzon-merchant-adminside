@@ -1,0 +1,144 @@
+@if(subAdminList(); as data){
+<div class="container-fluid">
+  <form (submit)="filterData()">
+    <div class="row mt-2 mx-3">
+      <div class="col-2">
+        <select
+          class="form-select custom-input-dark"
+          [field]="subadminForm.role"
+          (change)="filterData()"
+        >
+          @for (role of roles(); track $index) {
+          <option [value]="role">{{ role | titlecase }}</option>
+          }
+        </select>
+      </div>
+      <div class="col-3">
+        <input
+          type="email"
+          class="form-control custom-input-dark"
+          placeholder="Enter email here..."
+          [field]="subadminForm.email"
+        />
+      </div>
+      <div class="col-2">
+        <button class="btn btn-outline-danger rounded-3" (click)="clearFilter()">
+          Clear Filter
+        </button>
+      </div>
+      <!-- managing column  -->
+      <div class="col-4"></div>
+    </div>
+  </form>
+  <hr class="mx-3" />
+  <div class="row mx-3">
+    <table class="table">
+      <tr>
+        <th><i class="bi bi-person-circle me-1 fs-14"></i>UserName</th>
+        <th><i class="bi bi-envelope-at-fill me-1 fs-14"></i>Email</th>
+        <th><i class="bi bi-telephone-fill me-1 fs-14"></i>Mobile</th>
+        <th><i class="bi bi-person-lines-fill me-1 fs-14"></i>Admin level</th>
+        <th><i class="bi bi-layers-half me-1 fs-14"></i>Status</th>
+        <th><i class="bi bi-pencil-square me-1 fs-14"></i>Activity</th>
+      </tr>
+      @if (!pageLoader()) { @if (data.totalRecords > 0) { @for (admin of data.result; track $index)
+      {
+      <tr class="darkTheme">
+        <td>{{ admin.user_name }}</td>
+        <td>{{ admin.email }}</td>
+        <td>{{ admin.phone }}</td>
+        <td>
+          <span
+            class="badge"
+            [ngClass]="
+              admin.role == 'SUB-ADMIN-LEVEL-1'
+                ? 'badge-level1'
+                : admin.role == 'SUB-ADMIN-LEVEL-2'
+                ? 'badge-level2'
+                : 'badge-level3'
+            "
+            >{{
+              admin.role == 'SUB-ADMIN-LEVEL-1'
+                ? 'Sub-admin level-1'
+                : admin.role == 'SUB-ADMIN-LEVEL-2'
+                ? 'Sub-admin level-2'
+                : 'Sub-admin level-3'
+            }}</span
+          >
+        </td>
+        <td>
+          <span
+            class="badge"
+            [ngClass]="admin.status == 'ACTIVE' ? 'badge-active customPadding' : 'badge-blocked'"
+            >{{ admin.status | titlecase }}</span
+          >
+        </td>
+        <td>
+          <span
+            class="badge cursor-pointer badge-white"
+            (click)="TransferData(admin)"
+            routerLink="addSubadmin"
+            >Manage</span
+          >
+        </td>
+      </tr>
+      } } @else {
+      <tr class="card-dark">
+        <td colspan="6" class="p-4 text-center">
+          <img
+            class="bg-transparent"
+            src="assets/images/noDataFound.webp"
+            alt="No Data Found"
+            width="165"
+          /><br />
+          No Data Found!
+        </td>
+      </tr>
+      } } @else {
+      <tr>
+        <td colspan="6">
+          <div class="d-flex align-items-center justify-content-center m-5">
+            <div class="spinner-border m-5 text-light"></div>
+          </div>
+        </td>
+      </tr>
+      }
+    </table>
+    <div class="row d-flex align-items-center">
+      <div class="col-6 text-center">
+        <div class="row col-12">
+          <button
+            class="col-1 btn btn-primary sm-btn"
+            (click)="gotoFirstPageOrLastPage(1, data.totalRecords)"
+          >
+            First
+          </button>
+          <button
+            class="col-1 ms-2 btn btn-primary sm-btn"
+            (click)="gotoFirstPageOrLastPage(0, data.totalRecords)"
+          >
+            Last
+          </button>
+          <input
+            type="text"
+            class="col-4 ms-2 inputBox custom-input-dark"
+            [(ngModel)]="pageNumber"
+            min="1"
+          />
+          <button class="ms-2 col-1 btn btn-primary sm-btn p-2" (click)="gotoPage()">Go</button>
+        </div>
+      </div>
+
+      <mat-paginator
+        #subAdminPagination
+        class="col-6 bg-darkmode"
+        showFirstLastButtons
+        [length]="data.totalRecords"
+        [pageSize]="pageSize()"
+        aria-label="Select page"
+      >
+      </mat-paginator>
+    </div>
+  </div>
+</div>
+}
